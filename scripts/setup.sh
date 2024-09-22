@@ -28,8 +28,24 @@ ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=no ubuntu@"${REMOTE_IP}" << 'EOF'
     echo "Connected to the remote server."
     echo "The IP address of this server is: $(hostname -I | awk '{print $1}')"
 
-    echo "Running the Start App Scrip.........."
-    bash /home/ubuntu/scripts/start_app.sh
+    echo "Running the Start App Script.........."
+    source /home/ubuntu/scripts/start_app.sh
+
+    # Check if the script executed successfully
+    if [ $? -eq 0 ]; then
+        echo "Start App Script executed successfully."
+    else
+        echo "Failed to run Start App Script."
+        exit 1
+    fi
 EOF
+
+# Check the SSH exit status
+if [ $? -eq 0 ]; then
+    echo "Remote commands executed successfully."
+else
+    echo "Failed to execute remote commands."
+    exit 1
+fi
 
 exit 0 
