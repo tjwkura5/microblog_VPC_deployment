@@ -49,10 +49,18 @@ pipeline {
                     def startupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/scripts/start_app.sh'
 
                     // Step 1: Secure copy setup.sh to web_server EC2 instance
+                    //sh(script: "...", returnStatus: true):
+                        //Executes the scp command inside a shell in Jenkins.
+                        //The returnStatus: true option ensures that the script returns the exit status (instead of throwing an error).
+                        //This allows you to handle errors gracefully by checking the status.
                     def setupCopyStatus = sh(script: """
                         scp -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ${setupScriptPath} ubuntu@${webServerIP}:/home/ubuntu/scripts/setup.sh
                     """, returnStatus: true)
-
+                    
+                    // Check if the 'scp' command was successful by evaluating the return status.
+                    // 'setupCopyStatus' holds the exit status of the 'scp' command. 
+                    // If it is '0', it indicates success, so we echo a success message.
+                    // If it's not '0', it indicates a failure, and we use the 'error' command to fail the build with an error message.
                     if (setupCopyStatus == 0) {
                         echo "setup.sh copied successfully."
                     } else {
