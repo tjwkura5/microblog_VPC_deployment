@@ -45,8 +45,8 @@ pipeline {
                     // Variables for script paths and EC2 instance details
                     def jenkinsServerKey = '/home/ubuntu/.ssh/id_ed25519'
                     def webServerIP = '10.0.4.179'
-                    def setupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/setup.sh'
-                    def startupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/start_app.sh'
+                    def setupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/scripts/setup.sh'
+                    def startupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/scripts/start_app.sh'
 
                     // Step 1: Secure copy setup.sh to web_server EC2 instance
                     def setupCopyStatus = sh(script: """
