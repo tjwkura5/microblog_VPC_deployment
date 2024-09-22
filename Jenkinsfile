@@ -41,9 +41,42 @@ pipeline {
         }
       stage ('Deploy') {
             steps {
-                sh '''#!/bin/bash
-                echo "Leave this blank for now"
-                '''
+               script {
+                    // Variables for script paths and EC2 instance details
+                    def jenkinsServerKey = '/home/ubuntu/.ssh/id_ed25519'
+                    def webServerIP = '10.0.4.179'
+                    def setupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/setup.sh'
+                    def startupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/start_app.sh'
+
+                    // Step 1: Secure copy setup.sh to web_server EC2 instance
+                    def setupCopyStatus = sh(script: """
+                        scp -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ${setupScriptPath} ubuntu@${webServerIP}:/home/ubuntu/scripts/setup.sh
+                    """, returnStatus: true)
+
+                    if (setupCopyStatus == 0) {
+                        echo "setup.sh copied successfully."
+                    } else {
+                        error "Failed to copy setup.sh."
+                    }
+
+                    // Step 2: Secure copy start_app.sh to web_server EC2 instance
+                    def startupCopyStatus = sh(script: """
+                        scp -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ${startupScriptPath} ubuntu@${webServerIP}:/home/ubuntu/scripts/start_app.sh
+                    """, returnStatus: true)
+
+                    if (startupCopyStatus == 0) {
+                        echo "start_app.sh copied successfully."
+                    } else {
+                        error "Failed to copy start_app.sh."
+                    }
+
+                    // Step 3: Run the setup.sh script using source
+                    sh """
+                        ssh -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ubuntu@${webServerIP} '
+                            source /home/ubuntu/scripts/setup.sh
+                        '
+                    """
+                }
             }
         }
     }
