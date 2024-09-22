@@ -82,7 +82,8 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=${REPO_DIR}
 Environment="PATH=${REPO_DIR}/venv/bin"
-Environment="FLASK_APP=microblog.py"  # Set the FLASK_APP variable
+# Set the FLASK_APP variable
+Environment="FLASK_APP=microblog.py"  
 ExecStart=${REPO_DIR}/venv/bin/gunicorn -b :5000 -w 4 microblog:app
 
 [Install]
