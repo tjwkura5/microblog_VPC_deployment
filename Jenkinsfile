@@ -43,7 +43,7 @@ pipeline {
             steps {
                script {
                     // Variables for script paths and EC2 instance details
-                    def jenkinsServerKey = '/home/ubuntu/.ssh/id_ed25519'
+                    def jenkinsServerKey = '/var/lib/jenkins/.ssh/id_ed25519'
                     def webServerIP = '10.0.4.179'
                     def setupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/scripts/setup.sh'
                     def startupScriptPath = '/var/lib/jenkins/workspace/workload_4_main/scripts/start_app.sh'
