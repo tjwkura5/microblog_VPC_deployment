@@ -32,6 +32,7 @@ pipeline {
         stage('OWASP FS SCAN') {
             steps {
                 // Use the withCredentials step to inject the NVD API key into the environment
+                // The syntax for using withCredentials was found using chatGPT
                 withCredentials([string(credentialsId: 'NVD_API_KEY', variable: 'NVD_API_KEY')]) {
                     dependencyCheck additionalArguments: "--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey ${NVD_API_KEY}", 
                                    odcInstallation: 'DP-Check'
@@ -42,6 +43,8 @@ pipeline {
       stage ('Deploy') {
             steps {
                script {
+                    //The script {} block in Jenkins pipelines is used to allow execution of more complex Groovy code.
+                    // The use of the script block is a suggestion from chatgpt 
                     // Variables for script paths and EC2 instance details
                     def jenkinsServerKey = '/var/lib/jenkins/.ssh/id_ed25519'
                     def webServerIP = '10.0.4.179'
@@ -57,10 +60,14 @@ pipeline {
                         scp -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ${setupScriptPath} ubuntu@${webServerIP}:/home/ubuntu/scripts/setup.sh
                     """, returnStatus: true)
                     
+                    //The idea to store the exit status of the executed shell command to use for error handling came from chatGPT
+
                     // Check if the 'scp' command was successful by evaluating the return status.
                     // 'setupCopyStatus' holds the exit status of the 'scp' command. 
                     // If it is '0', it indicates success, so we echo a success message.
                     // If it's not '0', it indicates a failure, and we use the 'error' command to fail the build with an error message.
+                    // Instead of terminating the pipeline immediately we are gracefully handling the error
+                    // This suggestion comes from chatGpt 
                     if (setupCopyStatus == 0) {
                         echo "setup.sh copied successfully."
                     } else {
@@ -79,6 +86,8 @@ pipeline {
                     }
 
                     // Step 3: Run the setup.sh script using source
+                    // After connecting to the server, everything inside the single quotes will be executed on the remote server.
+                    // The syntax for this came from chatgpt. 
                     sh """
                         ssh -i ${jenkinsServerKey} -o StrictHostKeyChecking=no ubuntu@${webServerIP} '
                             source /home/ubuntu/scripts/setup.sh
