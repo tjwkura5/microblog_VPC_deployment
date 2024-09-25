@@ -586,6 +586,30 @@ For this stage of our workload we will be installing prometheus and grafana. Cre
 
 ## Issues/Troubleshooting
 
+This is the first time I've completed a workload without encountering any major issues. I did have a small syntax error in my Gunicorn service configuration file, which prevented me from seeing the app run, but after fixing that, everything was good to go. Speaking of configuration files, I noticed there was a microblog.conf file in the repository. I hadn’t seen it before, but I could have used Supervisor to start my Flask app instead of systemd. I would have just needed to change the port to 5000.
+
 ## Optimization
+
+**What are the advantages of separating the deployment environment from the production environment?:**
+
+The main advantage of separating the deployment environment from the production environment is optimizing resource allocation. By offloading CI/CD tasks from the app's compute resources, we prevent deployment processes from consuming critical resources needed to serve live user traffic. This improves performance, ensuring that production applications run efficiently without being impacted by ongoing deployments or builds. Additionally, this isolation enhances system reliability. For example, if there were a failure during deployment or if the Jenkins server crashed, the production environment would remain unaffected, minimizing user disruption.
+
+Furthermore, using a custom VPC for the web and application servers enhances security, control, and performance by isolating resources, enabling private subnets, and reducing latency by keeping communication between services within the same private network.
+
+**Does the infrastructure in this workload address these concerns?:**
+
+Yes, the infrastructure in this workload effectively addresses concerns around resource contention, performance, and reliability. By separating the deployment and production environments, we mitigate the risk of deployment tasks affecting live user traffic. Additionally, the use of a custom VPC for our web and application servers ensures better isolation, control, and network performance. While we are moving in the right direction in terms of security and scalability, further steps can be taken to optimize the infrastructure.
+
+**Could the infrastructure created in this workload be considered that of a "good system"? Why or why not?:**
+
+The infrastructure created in this workload is definitely a step up from workload 3. In this workload, we are creating a custom VPC and incorporating private networking (VPC peering), building on all the benefits from the previous workload. However, there are still some areas for improvement: 
+
+1. Infrastructure as Code (IaC): Our deployment process is still fairly manual. A tool like Terraform can automate the entire infrastructure setup and deployment, ensuring environments are consistently reproduced and reducing the need for manual intervention.
+
+2. Security Concerns with SSH: SSH’ing into our web and application servers directly from the CI/CD pipeline poses a security risk. After some research, I found tools like AWS Systems Manager (SSM) and AWS CodeDeploy can handle deployment without needing direct SSH access.
+
+3. Scalability: Although we've separated our Jenkins server from our application, our infrastructure lacks scalability provisions. We don’t have mechanisms in place to scale resources based on demand. Implementing autoscaling policies for our EC2 instances would address this concern.
+
+4. Pipeline Improvement: Right now our pipeline seems only good for initial setup. We should be able to run it multiple times to deploy any changes without issue. Perhaps we can leverage other tools or tweak our scripts so they can handle redeploying code without setting everything up from scratch.
 
 ## Conclusion 
