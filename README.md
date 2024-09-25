@@ -14,6 +14,7 @@ Let's get started!
 Clone [this](https://github.com/kura-labs-org/C5-Deployment-Workload-4) github repository to your Github account. The steps for this have been outlined in the past two workloads. If you get stuck you can refer back to workload 2 [here](https://github.com/tjwkura5/retail-banking-app-deployed-elastic-beanstalk-2).
 
 ## Custom VPC
+
 In this section we will go over the steps for creating a custom VPC. Our VPC will have a one availability zone (AZ), a public and private subnet and a NAT Gateway.
 
 **Step 1: Create a Custom VPC**
@@ -613,3 +614,9 @@ The infrastructure created in this workload is definitely a step up from workloa
 4. Pipeline Improvement: Right now our pipeline seems only good for initial setup. We should be able to run it multiple times to deploy any changes without issue. Perhaps we can leverage other tools or tweak our scripts so they can handle redeploying code without setting everything up from scratch.
 
 ## Conclusion 
+
+This project showcases the successful deployment of an application within a secure and scalable network environment using a custom VPC and VPC peering. By separating the Jenkins server from the application servers, the infrastructure reduces resource contention and enhances the stability of deployments without affecting live traffic. This setup also improves security by isolating environments and managing traffic flow through private networking.
+
+While the project has made significant strides in security, scalability, and performance, there are areas for further improvement. Adopting Infrastructure as Code (IaC) tools like Terraform would streamline the setup process and minimize manual interventions. Additionally, replacing SSH with AWS Systems Manager or CodeDeploy could further enhance security and simplify deployment management. Finally, incorporating autoscaling mechanisms would prepare the infrastructure to handle varying loads more efficiently.
+
+Overall, the project provides a robust foundation for future development but offers ample opportunities for optimization and expansion.
